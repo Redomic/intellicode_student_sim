@@ -13,5 +13,5 @@ STR_TO_MODEL_NAME_MAP = {
     "3.5": "gpt-3.5-turbo",
     "claude": "claude-3-5-sonnet-20240620",
     "llama": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-    "gemini": "gemini-2.0-flash-exp"
+    "gemini": "gemini-2.5-flash"
 }

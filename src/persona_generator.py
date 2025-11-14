@@ -54,6 +54,9 @@ class SyntheticPersona:
         mistake_patterns: Common error types they make
         working_memory: Affects complex problem performance (0.5-1.0)
         metacognition: Self-awareness for hints (0.3-1.0)
+        hint_benefit: How well they incorporate hints (0.3-1.0)
+        attention_span: Focus duration without degradation (0.5-1.0)
+        forgetting_rate: How fast they forget without practice (0.01-0.05)
         
         # Behavioral parameters
         consistency: Daily practice probability (0.6-0.95)
@@ -75,6 +78,9 @@ class SyntheticPersona:
     mistake_patterns: List[str]
     working_memory: float
     metacognition: float
+    hint_benefit: float
+    attention_span: float
+    forgetting_rate: float
     
     # Behavioral parameters
     consistency: float
@@ -85,17 +91,25 @@ class SyntheticPersona:
     # Integration fields
     database_user_key: Optional[str] = None
     current_mastery: Dict[str, float] = field(default_factory=dict)
+    average_mastery: float = 0.0
     
-    # Tracking fields
+    # Tracking fields (for cognitive state updates)
+    total_problems_attempted: int = 0
+    total_problems_solved: int = 0
+    total_hints_used: int = 0
+    
+    # Legacy tracking fields
     total_attempts: int = 0
     successful_attempts: int = 0
     hints_requested: int = 0
     days_active: int = 0
     
     def __post_init__(self):
-        """Initialize current_mastery from initial_mastery."""
+        """Initialize current_mastery and average_mastery from initial_mastery."""
         if not self.current_mastery:
             self.current_mastery = self.initial_mastery.copy()
+        if not self.average_mastery and self.current_mastery:
+            self.average_mastery = np.mean(list(self.current_mastery.values()))
 
 
 def generate_diverse_personas(
@@ -185,6 +199,9 @@ def _generate_beginner_persona(idx: int, topics: List[str]) -> SyntheticPersona:
         mistake_patterns=np.random.choice(mistake_patterns, size=5, replace=False).tolist(),
         working_memory=np.random.uniform(0.5, 0.7),
         metacognition=np.random.uniform(0.3, 0.5),
+        hint_benefit=np.random.uniform(0.4, 0.6),  # Moderate benefit from hints
+        attention_span=np.random.uniform(0.5, 0.7),
+        forgetting_rate=np.random.uniform(0.03, 0.05),  # Forget more quickly
         consistency=np.random.uniform(0.6, 0.8),
         hint_reliance=np.random.uniform(0.65, 0.85),  # High reliance on hints
         session_duration_minutes=int(np.random.uniform(30, 60)),
@@ -219,6 +236,9 @@ def _generate_intermediate_persona(idx: int, topics: List[str]) -> SyntheticPers
         mistake_patterns=np.random.choice(mistake_patterns, size=3, replace=False).tolist(),
         working_memory=np.random.uniform(0.65, 0.85),
         metacognition=np.random.uniform(0.5, 0.75),
+        hint_benefit=np.random.uniform(0.6, 0.8),  # Good benefit from hints
+        attention_span=np.random.uniform(0.7, 0.85),
+        forgetting_rate=np.random.uniform(0.02, 0.03),  # Moderate forgetting
         consistency=np.random.uniform(0.75, 0.90),
         hint_reliance=np.random.uniform(0.35, 0.55),  # Moderate hint usage
         session_duration_minutes=int(np.random.uniform(45, 90)),
@@ -252,6 +272,9 @@ def _generate_advanced_persona(idx: int, topics: List[str]) -> SyntheticPersona:
         mistake_patterns=np.random.choice(mistake_patterns, size=2, replace=False).tolist(),
         working_memory=np.random.uniform(0.80, 1.0),
         metacognition=np.random.uniform(0.75, 1.0),
+        hint_benefit=np.random.uniform(0.75, 0.95),  # Excellent benefit from hints
+        attention_span=np.random.uniform(0.85, 1.0),
+        forgetting_rate=np.random.uniform(0.01, 0.02),  # Minimal forgetting
         consistency=np.random.uniform(0.85, 0.95),
         hint_reliance=np.random.uniform(0.15, 0.30),  # Low hint usage
         session_duration_minutes=int(np.random.uniform(60, 120)),
