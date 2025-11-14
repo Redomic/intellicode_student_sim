@@ -29,6 +29,7 @@ from datetime import datetime
 import json
 
 from .persona_generator import SyntheticPersona, determine_hint_level
+from .rate_limiter import get_gemini_rate_limiter
 
 
 # Backend API configuration
@@ -205,16 +206,8 @@ class IntelliTAPIClient:
                     "function_name": None
                 }
                 
-                # Log submission payload for debugging
-                print(f"\n{'='*60}")
-                print(f"📤 CODE SUBMISSION TO BACKEND")
-                print(f"{'='*60}")
-                print(f"Question: {payload['question_title']}")
-                print(f"Language: {payload['language']}")
-                print(f"Test Cases: {len(test_cases)}")
-                print(f"\nCode being submitted:")
-                print(code)
-                print(f"{'='*60}\n")
+                # Minimal console output, full details in log file
+                pass
                 
                 async with session.post(url, json=payload, headers=headers) as response:
                     if response.status == 200:
@@ -233,33 +226,8 @@ class IntelliTAPIClient:
                             "test_results": data.get("test_results", [])
                         }
                         
-                        print(f"  📊 Submission: {result['status']} ({result['passed_count']}/{result['total_count']})")
-                        
-                        # Detailed error logging for failures
-                        if not result['success']:
-                            print(f"\n{'='*60}")
-                            print(f"❌ SUBMISSION FAILED - DETAILED ANALYSIS")
-                            print(f"{'='*60}")
-                            print(f"Status: {result['status']}")
-                            print(f"Passed: {result['passed_count']}/{result['total_count']} test cases")
-                            
-                            if result['error_message']:
-                                print(f"\nError Message:")
-                                print(result['error_message'])
-                            
-                            # Show test case details
-                            if result['test_results']:
-                                print(f"\nTest Case Results:")
-                                for i, test_result in enumerate(result['test_results'][:3], 1):  # Show first 3
-                                    status = "✅ PASS" if test_result.get('passed') else "❌ FAIL"
-                                    print(f"\n  Test {i}: {status}")
-                                    print(f"    Input: {test_result.get('input', 'N/A')}")
-                                    print(f"    Expected: {test_result.get('expected_output', 'N/A')}")
-                                    print(f"    Actual: {test_result.get('actual_output', 'None')}")
-                                    if test_result.get('error'):
-                                        print(f"    Error: {test_result.get('error')}")
-                            
-                            print(f"{'='*60}\n")
+                        # Minimal console output - logger handles details
+                        pass
                         
                         return result
                     else:
@@ -316,6 +284,10 @@ class IntelliTAPIClient:
             Dict with hint data
         """
         try:
+            # Rate limiting: backend uses Gemini for hint generation
+            rate_limiter = get_gemini_rate_limiter()
+            await rate_limiter.acquire()
+            
             # Determine hint level if not provided
             if hint_level is None:
                 attempt_number = 1  # Will be auto-calculated by backend from session
@@ -372,6 +344,96 @@ class IntelliTAPIClient:
                 "level_name": "Error",
                 "error": str(e)
             }
+    
+    async def request_code_analysis(
+        self,
+        problem: Dict[str, Any],
+        code: str,
+        submission_id: str
+    ) -> Dict[str, Any]:
+        """
+        Request code quality analysis from CodeAnalysisAgent via API.
+        
+        Provides optimization suggestions and best practices after successful submission.
+        """
+        try:
+            # Rate limiting: backend uses Gemini for code analysis
+            rate_limiter = get_gemini_rate_limiter()
+            await rate_limiter.acquire()
+            
+            timeout = aiohttp.ClientTimeout(
+                total=API_TIMEOUTS["hint"],
+                connect=API_TIMEOUTS["connect"]
+            )
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                url = f"{API_BASE_URL}/agents/analyze-code"
+                headers = self.get_auth_headers()
+                
+                payload = {
+                    "code": code,
+                    "question_id": problem['question_id'],
+                    "question_title": problem.get('title', 'Untitled'),
+                    "language": "python",
+                    "submission_id": submission_id
+                }
+                
+                async with session.post(url, json=payload, headers=headers) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        return {
+                            "success": True,
+                            "analysis": data.get("analysis", ""),
+                            "suggestions": data.get("suggestions", [])
+                        }
+                    else:
+                        return {"success": False}
+                        
+        except Exception as e:
+            print(f"  ❌ Code analysis exception: {e}")
+            return {"success": False}
+    
+    async def ask_orchestrator(
+        self,
+        question: str,
+        context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Ask a clarifying question to the Orchestrator when stuck.
+        
+        Used for conceptual help, algorithm guidance, or understanding errors.
+        """
+        try:
+            # Rate limiting: backend uses Gemini for orchestrator
+            rate_limiter = get_gemini_rate_limiter()
+            await rate_limiter.acquire()
+            
+            timeout = aiohttp.ClientTimeout(
+                total=API_TIMEOUTS["hint"],
+                connect=API_TIMEOUTS["connect"]
+            )
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                url = f"{API_BASE_URL}/agents/ask"
+                headers = self.get_auth_headers()
+                
+                payload = {
+                    "question": question,
+                    "context": context or {},
+                    "session_id": self.current_session_id
+                }
+                
+                async with session.post(url, json=payload, headers=headers) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        return {
+                            "success": True,
+                            "answer": data.get("answer", "")
+                        }
+                    else:
+                        return {"success": False}
+                        
+        except Exception as e:
+            print(f"  ❌ Orchestrator exception: {e}")
+            return {"success": False}
     
     async def end_session(self) -> bool:
         """

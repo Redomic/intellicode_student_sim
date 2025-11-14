@@ -40,7 +40,7 @@ def generate(data):
             model=data["model"],
             google_api_key=api_key,
             temperature=0.7,
-            max_output_tokens=4096
+            max_output_tokens=8192
         )
         
         # Format messages for Gemini

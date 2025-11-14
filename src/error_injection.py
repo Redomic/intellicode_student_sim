@@ -14,10 +14,14 @@ This is the core of student_sim's solution simulation, adapted for IntelliT.
 from typing import Dict, Any, Optional
 import os
 import asyncio
+import random
 from langchain_google_genai import ChatGoogleGenerativeAI
+from google.api_core import exceptions as google_exceptions
 
 from .persona_generator import SyntheticPersona
 from .cognitive_behavior import should_make_mistake_on_retry
+from .simulation_logger import get_logger
+from .rate_limiter import get_gemini_rate_limiter
 
 
 async def generate_code_with_errors(
@@ -72,69 +76,109 @@ async def generate_code_with_errors(
             attempt_number
         )
     
-    # Log prompt for debugging
-    print(f"\n{'='*60}")
-    print(f"🧠 COGNITIVE CODE GENERATION (Attempt {attempt_number})")
-    print(f"{'='*60}")
-    print(f"Persona: {persona.user_key} ({persona.skill_level})")
-    print(f"Error Probability: {error_prediction['error_probability']:.2f}")
-    print(f"Will Make Error: {error_prediction['will_make_error']}")
-    print(f"Error Types: {', '.join(error_prediction['error_types'])}")
-    print(f"Topic Mastery: {error_prediction['avg_topic_mastery']:.2f}")
-    if previous_hint:
-        print(f"Hint Received: Yes (Length: {len(previous_hint)} chars)")
-    print(f"\nPrompt Length: {len(prompt)} chars")
-    print(f"{'='*60}\n")
+    # Log to file with full details
+    logger = get_logger()
+    logger.log_event(
+        event_type="code_generation_start",
+        message=f"Generating code (Attempt {attempt_number})",
+        data={
+            "persona": persona.user_key,
+            "skill_level": persona.skill_level,
+            "error_probability": error_prediction['error_probability'],
+            "will_make_error": error_prediction['will_make_error'],
+            "error_types": error_prediction['error_types'],
+            "topic_mastery": error_prediction['avg_topic_mastery'],
+            "has_hint": previous_hint is not None,
+            "prompt_length": len(prompt)
+        },
+        console=False  # Don't spam console
+    )
     
-    # Generate code with retries and exponential backoff
+    # Generate code with rate limiting, retries, and exponential backoff
     max_retries = 5
+    rate_limiter = get_gemini_rate_limiter()
+    
     for retry in range(max_retries):
         try:
+            # Rate limiting: acquire permission before making request
+            await rate_limiter.acquire()
+            
+            # Make API call
             messages = [("human", prompt)]
             response = await llm.ainvoke(messages)
             
             code = response.content.strip() if response.content else ""
             
-            # Log response
-            print(f"\n{'='*60}")
-            print(f"📥 COGNITIVE CODE RESPONSE (Retry {retry + 1}/{max_retries})")
-            print(f"{'='*60}")
-            print(f"Raw response length: {len(code)} chars")
+            # Log LLM call to file
+            logger.log_llm_call(
+                model=llm.model,
+                prompt_length=len(prompt),
+                response_length=len(code),
+                purpose=f"code_generation_attempt_{attempt_number}",
+                metadata={
+                    "persona": persona.user_key,
+                    "retry": retry + 1,
+                    "max_retries": max_retries
+                }
+            )
             
+            # Clean and validate
             if code:
-                print(f"\nGenerated code preview (first 300 chars):")
-                print(code[:300] + "..." if len(code) > 300 else code)
-                print(f"{'='*60}\n")
-                
-                # Clean up code formatting
                 code = clean_code_response(code)
-                
-                # Validate it's not empty after cleaning
                 if code and len(code) > 20:
                     return code
                 else:
-                    print(f"⚠️ Code too short after cleaning, retrying...")
+                    print(f"  ⚠️ Code too short after cleaning ({len(code)} chars), retrying...")
             else:
-                print(f"\n⚠️ EMPTY RESPONSE FROM LLM")
-                print(f"{'='*60}\n")
+                print(f"  ⚠️ Empty LLM response (possible safety filter), retrying...")
             
-            # Exponential backoff
+            # Empty response: exponential backoff with jitter
             if retry < max_retries - 1:
-                wait_time = 2 ** retry
-                print(f"⏳ Waiting {wait_time}s before retry...")
+                base_wait = 2 ** retry
+                jitter = random.uniform(0, 0.5 * base_wait)
+                wait_time = base_wait + jitter
+                print(f"  ⏳ Waiting {wait_time:.1f}s before retry...")
                 await asyncio.sleep(wait_time)
         
+        except google_exceptions.ResourceExhausted as e:
+            # 429 Rate Limit: longer backoff
+            print(f"  ⚠️ Rate limit hit (429), backing off...")
+            if retry < max_retries - 1:
+                wait_time = (2 ** (retry + 2)) + random.uniform(5, 15)  # 4s, 8s, 16s, 32s, 64s + jitter
+                print(f"  ⏳ Waiting {wait_time:.1f}s before retry...")
+                await asyncio.sleep(wait_time)
+            else:
+                raise
+        
+        except google_exceptions.GoogleAPIError as e:
+            # Other Google API errors
+            print(f"  ⚠️ Google API error: {type(e).__name__}")
+            if retry < max_retries - 1:
+                wait_time = (2 ** retry) + random.uniform(1, 3)
+                print(f"  ⏳ Waiting {wait_time:.1f}s before retry...")
+                await asyncio.sleep(wait_time)
+            else:
+                raise
+        
         except Exception as e:
-            print(f"❌ Error generating code: {e}")
+            # Generic errors
+            print(f"  ❌ Error generating code: {e}")
             if retry < max_retries - 1:
                 wait_time = 2 ** retry
-                print(f"⏳ Waiting {wait_time}s before retry...")
+                print(f"  ⏳ Waiting {wait_time}s before retry...")
                 await asyncio.sleep(wait_time)
             else:
                 raise
     
-    # If all retries failed, raise error
-    raise RuntimeError(f"Failed to generate code after {max_retries} attempts")
+    # If all retries failed, raise error with context
+    error_msg = (
+        f"Failed to generate code after {max_retries} attempts. "
+        f"Problem: {problem.get('title', 'Unknown')}. "
+        f"Persona: {persona.user_key}. "
+        f"This may be due to: (1) Gemini safety filters, (2) Rate limiting, (3) Prompt issues."
+    )
+    print(f"\n❌ {error_msg}")
+    raise RuntimeError(error_msg)
 
 
 def build_first_attempt_prompt(

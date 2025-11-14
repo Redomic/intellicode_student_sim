@@ -31,6 +31,7 @@ from .cognitive_behavior import (
     calculate_target_success_rate
 )
 from .error_injection import generate_code_with_errors
+from .simulation_logger import get_logger
 
 
 class DailyMetrics:
@@ -209,23 +210,13 @@ async def generate_code_with_cognitive_modeling(
     )
     
     # Log cognitive prediction
-    print(f"\n{'='*60}")
-    print(f"🧠 COGNITIVE ERROR PREDICTION")
-    print(f"{'='*60}")
-    print(f"Persona: {persona.user_key} ({persona.skill_level})")
-    print(f"Problem: {problem.get('title', 'Untitled')}")
-    print(f"Attempt: {attempt_number}")
-    print(f"Expected Success Rate: {calculate_target_success_rate(persona, problem):.1%}")
-    print(f"\nPrediction:")
-    print(f"  - Will Make Error: {error_prediction['will_make_error']}")
-    print(f"  - Error Probability: {error_prediction['error_probability']:.2%}")
-    print(f"  - Topic Mastery: {error_prediction['avg_topic_mastery']:.2%}")
-    print(f"  - Error Types: {', '.join(error_prediction['error_types'])}")
-    if error_prediction['affected_topics']:
-        print(f"  - Weak Topics: {', '.join(error_prediction['affected_topics'])}")
-    if previous_hint:
-        print(f"  - Hint Available: Yes (benefit factor: {persona.hint_benefit:.2f})")
-    print(f"{'='*60}\n")
+    logger = get_logger()
+    logger.log_cognitive_prediction(
+        persona_key=persona.user_key,
+        problem_title=problem.get('title', 'Untitled'),
+        attempt=attempt_number,
+        prediction=error_prediction
+    )
     
     # Step 2: Generate code with predicted errors using error injection
     code = await generate_code_with_errors(
@@ -288,26 +279,22 @@ async def simulate_problem_attempt(
     last_result = None
     submission_id = None
     previous_errors = None
-    previous_hint_text = None  # Track hint text for cognitive modeling
-    
-    print(f"\n  🧠 Using cognitive modeling for code generation (skill: {persona.skill_level})...")
+    previous_hint_text = None
+    logger = get_logger()
     
     while attempt_number < max_attempts and not success:
         attempt_number += 1
         persona.total_attempts += 1
         
-        # Generate code using cognitive modeling with error prediction
-        print(f"  🤖 Attempt {attempt_number}: Generating code with cognitive modeling...")
+        # Generate code using cognitive modeling
         code = await generate_code_with_cognitive_modeling(
             persona=persona,
             problem=problem,
             attempt_number=attempt_number,
             previous_errors=previous_errors,
             previous_code=last_code,
-            previous_hint=previous_hint_text  # Pass hint text for learning
+            previous_hint=previous_hint_text
         )
-        print(f"  ✅ Generated {len(code)} chars of code")
-        print(f"  📝 Code preview: {code[:100]}...")
         last_code = code
         
         # Submit via API (automatic execution + learner state update)
@@ -322,23 +309,74 @@ async def simulate_problem_attempt(
         submission_id = result.get("submission_id")
         previous_errors = result.get("error_message")
         
-        # If failed and hints available, request hint
+        # Log submission result
+        logger.log_submission(
+            persona_key=persona.user_key,
+            problem_title=problem.get('title', 'Untitled'),
+            attempt=attempt_number,
+            success=success,
+            passed=result.get("passed_count", 0),
+            total=result.get("total_count", 0),
+            error_message=previous_errors
+        )
+        
+        # Agent interactions based on result
         if not success and use_hints and attempt_number < max_attempts:
-            if should_request_hint(persona, attempt_number):
+            base_hint_prob = 0.80
+            attempt_boost = attempt_number * 0.10
+            should_ask = random.random() < min(0.95, base_hint_prob + attempt_boost)
+            
+            if should_ask:
                 hint = await api_client.request_hint(
                     problem=problem,
                     code=code,
-                    hint_level=None  # Let backend auto-calculate
+                    hint_level=None
                 )
                 
                 if hint.get("success"):
                     hints_received.append(hint)
                     persona.hints_requested += 1
-                    # Extract hint text for next attempt's cognitive modeling
                     previous_hint_text = hint.get("hint_text", hint.get("hint", ""))
-                    print(f"  💡 Hint received: {previous_hint_text[:100]}...")
+                    
+                    logger.log_agent_interaction(
+                        agent_type="hint",
+                        persona_key=persona.user_key,
+                        action=f"Level {hint.get('hint_level', '?')}",
+                        success=True,
+                        metadata={"attempt": attempt_number}
+                    )
+                
+                if attempt_number >= 2 and random.random() < 0.5:
+                    question = f"I'm struggling with {problem.get('title', 'this problem')}. {previous_errors[:100] if previous_errors else 'My code is failing'}"
+                    orch_result = await api_client.ask_orchestrator(
+                        question=question,
+                        context={"problem_id": problem['question_id'], "attempt": attempt_number}
+                    )
+                    
+                    if orch_result.get("success"):
+                        logger.log_agent_interaction(
+                            agent_type="orchestrator",
+                            persona_key=persona.user_key,
+                            action="Conceptual help",
+                            success=True
+                        )
         
-        # Small delay between attempts
+        elif success:
+            if submission_id and random.random() < 0.7:
+                analysis_result = await api_client.request_code_analysis(
+                    problem=problem,
+                    code=code,
+                    submission_id=submission_id
+                )
+                
+                if analysis_result.get("success"):
+                    logger.log_agent_interaction(
+                        agent_type="analysis",
+                        persona_key=persona.user_key,
+                        action="Code review",
+                        success=True
+                    )
+        
         await asyncio.sleep(0.1)
     
     # Update success counter
@@ -363,7 +401,7 @@ async def simulate_14_day_trajectory(
     persona: SyntheticPersona,
     questions: List[Dict[str, Any]],
     save_trajectory: bool = True,
-    output_dir: str = "student_sim/results/trajectories"
+    output_dir: str = "results/trajectories"
 ) -> List[DailyMetrics]:
     """
     Simulate 14-day learning trajectory for a single persona using backend API.
@@ -402,7 +440,8 @@ async def simulate_14_day_trajectory(
         return []
     
     trajectory = []
-    attempted_questions = set()  # Track to avoid immediate repeats
+    attempted_questions = set()
+    logger = get_logger()
     
     for day in range(1, 15):
         metrics = DailyMetrics(day, persona.user_key)
@@ -443,7 +482,7 @@ async def simulate_14_day_trajectory(
         metrics.problem_topics = problem.get('topics', [])
         attempted_questions.add(problem_id)
         
-        print(f"Day {day}: {persona.user_key} attempting '{metrics.problem_attempted}' ({metrics.problem_difficulty})")
+        print(f"\nDay {day}: {metrics.problem_attempted} ({metrics.problem_difficulty})")
         
         # Attempt problem (uses API, automatic learner state updates!)
         try:
@@ -504,11 +543,22 @@ async def simulate_14_day_trajectory(
         
         trajectory.append(metrics)
         
-        print(f"  Final: {'✅ SUCCESS' if metrics.success else '❌ FAILED'}, "
-              f"Avg Mastery: {get_persona_average_mastery(persona):.3f}, "
-              f"Hints: {metrics.hints_used}")
+        # Log day summary
+        mastery_change = get_persona_average_mastery(persona) - (
+            sum(metrics.mastery_before.values()) / len(metrics.mastery_before) 
+            if metrics.mastery_before else 0
+        )
         
-        # Small delay between days
+        logger.log_day_summary(
+            day=day,
+            persona_key=persona.user_key,
+            problem_title=metrics.problem_attempted,
+            attempts=metrics.attempts,
+            success=metrics.success,
+            hints_used=metrics.hints_used,
+            mastery_change=mastery_change
+        )
+        
         await asyncio.sleep(0.1)
     
     # Save trajectory to file
@@ -546,17 +596,21 @@ async def simulate_14_day_trajectory(
         except Exception as e:
             print(f"\n⚠️ Failed to save trajectory: {e}")
     
-    print(f"\n{'='*60}")
-    print(f"Completed 14-Day Simulation: {persona.user_key}")
-    print(f"Days Active: {persona.days_active}/14")
-    print(f"Success Rate: {persona.successful_attempts}/{persona.total_attempts}")
-    
     initial_avg = (
         sum(persona.initial_mastery.values()) / len(persona.initial_mastery)
         if persona.initial_mastery else 0
     )
-    print(f"Mastery Gain: {get_persona_average_mastery(persona) - initial_avg:.3f}")
-    print(f"{'='*60}\n")
+    final_avg = get_persona_average_mastery(persona)
+    success_rate = persona.successful_attempts / persona.total_attempts if persona.total_attempts > 0 else 0
+    
+    logger.log_simulation_complete(
+        persona_key=persona.user_key,
+        days_active=persona.days_active,
+        total_attempts=persona.total_attempts,
+        success_rate=success_rate,
+        mastery_gain=final_avg - initial_avg,
+        total_hints=sum(m.hints_used for m in trajectory)
+    )
     
     return trajectory
 
@@ -570,6 +624,12 @@ async def run_parallel_simulations(
     Run simulations for multiple personas in parallel.
     
     Each persona runs independently with their own API client and login.
+    
+    RATE LIMITING:
+    - All concurrent tasks share a GLOBAL rate limiter (10 RPM hard limit)
+    - With max_concurrent=2: each task gets ~5 requests/min on average
+    - Rate limiter automatically blocks tasks when limit reached
+    - This prevents 429 errors from Gemini API
     
     Args:
         personas: List of SyntheticPersona objects (with database_user_key set)

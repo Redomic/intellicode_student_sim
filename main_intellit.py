@@ -41,6 +41,7 @@ from src.db_setup import (
 )
 from src.simulation_engine import run_parallel_simulations
 from src.metrics_tracker import MetricsTracker
+from src.simulation_logger import init_logger, finalize_logger
 
 
 # ============================================================================
@@ -51,7 +52,7 @@ CONFIG = {
     # Simulation parameters
     "n_personas": 25,  # Number of synthetic users
     "n_questions": 200,  # Number of questions to load
-    "max_concurrent": 3,  # Max parallel simulations (API rate limiting)
+    "max_concurrent": 2,  # Max parallel simulations (HARD LIMIT: 10 RPM shared across all threads)
     "random_seed": 42,  # For reproducibility
     
     # Output paths
@@ -74,6 +75,9 @@ def print_banner(text: str):
 async def main():
     """Main execution pipeline."""
     start_time = datetime.utcnow()
+    
+    # Initialize logger for detailed file logging
+    init_logger(log_dir=f"{CONFIG['results_dir']}/logs")
     
     print_banner("INTELLIT SYNTHETIC USER EVALUATION")
     print(f"Start Time: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -109,6 +113,13 @@ async def main():
     
     print("✅ GEMINI_API_KEY configured")
     print("✅ Backend is running")
+    
+    # Rate limiting info
+    print(f"\n⚠️  Rate Limiting:")
+    print(f"   - HARD LIMIT: 10 RPM (Requests Per Minute)")
+    print(f"   - Shared across {CONFIG['max_concurrent']} concurrent threads")
+    print(f"   - Expected: ~5-6 actual requests/min with backoff")
+    print(f"   - Automatic wait if limit reached")
     
     # Create output directories
     os.makedirs(CONFIG['results_dir'], exist_ok=True)
@@ -302,6 +313,7 @@ async def main():
     print("✅ ALL PHASES COMPLETE")
     print(f"{'='*80}\n")
     
+    finalize_logger()
     return 0
 
 
@@ -327,8 +339,8 @@ def cli():
     parser.add_argument(
         '--concurrent', '-c',
         type=int,
-        default=3,
-        help='Max concurrent simulations (default: 3)'
+        default=2,
+        help='Max concurrent simulations (default: 2, HARD LIMIT: 10 RPM shared across all threads)'
     )
     parser.add_argument(
         '--ablation',
@@ -358,12 +370,14 @@ def cli():
     except KeyboardInterrupt:
         print("\n\n⚠️ INTERRUPTED BY USER")
         print("⛔ Simulation stopped - partial data may be incomplete")
+        finalize_logger()
         sys.exit(130)
     except Exception as e:
         print(f"\n\n❌ FATAL ERROR IN MAIN: {e}")
         import traceback
         traceback.print_exc()
         print("\n⛔ SIMULATION FAILED - No valid data generated")
+        finalize_logger()
         sys.exit(1)
 
 
