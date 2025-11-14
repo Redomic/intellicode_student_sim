@@ -1,0 +1,484 @@
+2025-11-14 16:24:22,191 - __main__ - INFO - ================================================================================
+2025-11-14 16:24:22,191 - __main__ - INFO - 🚀 SYNTHETIC USER EVALUATION - IntelliT Multi-Agent System
+2025-11-14 16:24:22,191 - __main__ - INFO - ================================================================================
+2025-11-14 16:24:22,191 - __main__ - INFO - Configuration:
+2025-11-14 16:24:22,191 - __main__ - INFO -   random_seed: 42
+2025-11-14 16:24:22,191 - __main__ - INFO -   results_dir: results
+2025-11-14 16:24:22,191 - __main__ - INFO -   n_users: 1
+2025-11-14 16:24:22,191 - __main__ - INFO -   persona_distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:24:22,191 - __main__ - INFO -   simulation_config: {'n_days': 2, 'problems_per_day': 1, 'hint_threshold': 0.6, 'max_hints_per_problem': 3, 'review_ratio': 0.4, 'growth_ratio': 0.5, 'challenge_ratio': 0.1}
+2025-11-14 16:24:22,191 - __main__ - INFO - ================================================================================
+2025-11-14 16:24:22,191 - __main__ - INFO - 
+📝 PHASE 1: Generating Synthetic Student Personas
+2025-11-14 16:24:22,191 - src.persona_generator - INFO - ✅ PersonaGenerator initialized with seed 42
+2025-11-14 16:24:22,192 - src.persona_generator - INFO - 🎭 Generating 1 personas with distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:24:22,192 - src.persona_generator - INFO - 📊 Target counts: {'beginner': 1, 'intermediate': 0, 'advanced': 0}
+2025-11-14 16:24:22,193 - src.persona_generator - INFO - ✅ Generated 1 personas
+2025-11-14 16:24:22,193 - src.persona_generator - INFO - 📊 Persona Statistics:
+2025-11-14 16:24:22,193 - src.persona_generator - INFO -   BEGINNER     n= 1 | mastery=0.092 | lr=0.118 | hint=0.820 | consistency=0.775
+2025-11-14 16:24:22,194 - src.persona_generator - INFO - 💾 Saved 1 personas to results/personas.json
+2025-11-14 16:24:22,195 - __main__ - INFO - 
+🔧 PHASE 2: Setting Up Data Adapter
+2025-11-14 16:24:22,219 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x142cafa50>: Failed to establish a new connection: [Errno 61] Connection refused')': /_db/_system/_api/database
+2025-11-14 16:24:24,225 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x147190690>: Failed to establish a new connection: [Errno 61] Connection refused')': /_db/_system/_api/database
+2025-11-14 16:24:28,233 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x147191650>: Failed to establish a new connection: [Errno 61] Connection refused')': /_db/_system/_api/database
+2025-11-14 16:24:28,238 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x14716fa50>: Failed to establish a new connection: [Errno 61] Connection refused')': /_db/_system/_api/database
+2025-11-14 16:24:54,972 - __main__ - INFO - ================================================================================
+2025-11-14 16:24:54,972 - __main__ - INFO - 🚀 SYNTHETIC USER EVALUATION - IntelliT Multi-Agent System
+2025-11-14 16:24:54,972 - __main__ - INFO - ================================================================================
+2025-11-14 16:24:54,972 - __main__ - INFO - Configuration:
+2025-11-14 16:24:54,972 - __main__ - INFO -   random_seed: 42
+2025-11-14 16:24:54,972 - __main__ - INFO -   results_dir: results
+2025-11-14 16:24:54,972 - __main__ - INFO -   n_users: 1
+2025-11-14 16:24:54,972 - __main__ - INFO -   persona_distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:24:54,972 - __main__ - INFO -   simulation_config: {'n_days': 2, 'problems_per_day': 1, 'hint_threshold': 0.6, 'max_hints_per_problem': 3, 'review_ratio': 0.4, 'growth_ratio': 0.5, 'challenge_ratio': 0.1}
+2025-11-14 16:24:54,972 - __main__ - INFO - ================================================================================
+2025-11-14 16:24:54,972 - __main__ - INFO - 
+📝 PHASE 1: Generating Synthetic Student Personas
+2025-11-14 16:24:54,972 - src.persona_generator - INFO - ✅ PersonaGenerator initialized with seed 42
+2025-11-14 16:24:54,972 - src.persona_generator - INFO - 🎭 Generating 1 personas with distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:24:54,972 - src.persona_generator - INFO - 📊 Target counts: {'beginner': 1, 'intermediate': 0, 'advanced': 0}
+2025-11-14 16:24:54,972 - src.persona_generator - INFO - ✅ Generated 1 personas
+2025-11-14 16:24:54,972 - src.persona_generator - INFO - 📊 Persona Statistics:
+2025-11-14 16:24:54,972 - src.persona_generator - INFO -   BEGINNER     n= 1 | mastery=0.092 | lr=0.118 | hint=0.820 | consistency=0.775
+2025-11-14 16:24:54,973 - src.persona_generator - INFO - 💾 Saved 1 personas to results/personas.json
+2025-11-14 16:24:54,973 - __main__ - INFO - 
+🔧 PHASE 2: Setting Up Data Adapter
+2025-11-14 16:24:55,003 - app.db.database - INFO - Database connection established
+2025-11-14 16:24:55,003 - src.intellit_adapter - INFO - ✅ IntelliTAdapter initialized with seed 42
+2025-11-14 16:24:55,003 - __main__ - INFO - Verifying database connection and question availability...
+2025-11-14 16:24:55,003 - __main__ - INFO - 
+✂️ PHASE 3: Splitting into Experimental and Control Groups
+2025-11-14 16:24:55,003 - __main__ - INFO -   Experimental group: 0 personas
+2025-11-14 16:24:55,003 - __main__ - INFO -   Control group: 1 personas
+2025-11-14 16:24:55,003 - __main__ - INFO -   Experimental skill distribution: {}
+2025-11-14 16:24:55,003 - __main__ - INFO -   Control skill distribution: {'beginner': 1}
+2025-11-14 16:24:55,003 - __main__ - INFO - 
+🧪 PHASE 4: Running EXPERIMENTAL Group (With Agents)
+2025-11-14 16:24:55,004 - src.intellit_adapter - INFO - 🎯 Target: 40 train + 15 test questions
+2025-11-14 16:24:55,004 - src.intellit_adapter - INFO - 📊 Difficulty mix: {'BEGINNER': 0.4, 'INTERMEDIATE': 0.4, 'ADVANCED': 0.2}
+2025-11-14 16:24:55,004 - src.intellit_adapter - INFO - 📥 Fetching questions from IntelliT database...
+2025-11-14 16:24:55,013 - src.intellit_adapter - INFO - ✅ Fetched 0 questions
+2025-11-14 16:24:55,013 - src.intellit_adapter - WARNING - ⚠️ Only 0 questions available, requested 55
+2025-11-14 16:24:55,013 - src.intellit_adapter - WARNING - ⚠️ Only 0 BEGINNER questions available, need 22
+2025-11-14 16:24:55,013 - src.intellit_adapter - WARNING - ⚠️ Only 0 INTERMEDIATE questions available, need 22
+2025-11-14 16:24:55,013 - src.intellit_adapter - WARNING - ⚠️ Only 0 ADVANCED questions available, need 11
+2025-11-14 16:24:55,013 - src.intellit_adapter - INFO - 📊 Stratified split: 0 train, 0 test
+2025-11-14 16:24:55,013 - src.intellit_adapter - INFO - ✅ Prepared 0 train + 0 test questions
+2025-11-14 16:24:55,013 - src.simulation_engine - INFO - ✅ SimulationEngine initialized: 0 personas, 2 days, agents=ON
+2025-11-14 16:24:55,013 - src.simulation_engine - INFO - 🚀 Starting 2-day simulation...
+2025-11-14 16:24:55,013 - src.simulation_engine - INFO - 
+📅 Day 1/2
+2025-11-14 16:24:55,013 - src.simulation_engine - INFO -    0/0 personas practiced today
+2025-11-14 16:24:55,013 - src.simulation_engine - INFO - 
+📅 Day 2/2
+2025-11-14 16:24:55,013 - src.simulation_engine - INFO -    0/0 personas practiced today
+2025-11-14 16:24:55,013 - src.simulation_engine - INFO - 
+✅ Simulation completed in 0.0s
+2025-11-14 16:24:55,013 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:24:55,013 - src.trajectory_tracker - INFO - 💾 Saving 0 trajectories...
+2025-11-14 16:24:55,013 - src.trajectory_tracker - INFO - ✅ All trajectories saved to results/trajectories/experimental
+2025-11-14 16:24:55,013 - __main__ - INFO -   Experimental Group Stats:
+2025-11-14 16:24:55,013 - __main__ - INFO -     total_personas                 0
+2025-11-14 16:24:55,013 - __main__ - INFO -     total_days                     2
+2025-11-14 16:24:55,013 - __main__ - INFO -     active_days                    0
+2025-11-14 16:24:55,013 - __main__ - INFO -     activity_rate                  0.0
+2025-11-14 16:24:55,013 - __main__ - INFO -     total_problems_attempted       0
+2025-11-14 16:24:55,013 - __main__ - INFO -     total_problems_solved          0
+2025-11-14 16:24:55,014 - __main__ - INFO -     success_rate                   0.0
+2025-11-14 16:24:55,014 - __main__ - INFO -     total_hints_used               0
+2025-11-14 16:24:55,014 - __main__ - INFO -     avg_hints_per_problem          0.0
+2025-11-14 16:24:55,014 - __main__ - INFO -     avg_mastery_gain               0.0
+2025-11-14 16:24:55,014 - __main__ - INFO -     median_mastery_gain            0.0
+2025-11-14 16:24:55,014 - __main__ - INFO -     mastery_gain_std               0.0
+2025-11-14 16:24:55,014 - __main__ - INFO - 
+🎯 PHASE 5: Running CONTROL Group (Without Agents)
+2025-11-14 16:24:55,014 - src.intellit_adapter - INFO - 🎯 Target: 40 train + 15 test questions
+2025-11-14 16:24:55,014 - src.intellit_adapter - INFO - 📊 Difficulty mix: {'BEGINNER': 0.4, 'INTERMEDIATE': 0.4, 'ADVANCED': 0.2}
+2025-11-14 16:24:55,014 - src.intellit_adapter - INFO - 📥 Fetching questions from IntelliT database...
+2025-11-14 16:24:55,016 - src.intellit_adapter - INFO - ✅ Fetched 0 questions
+2025-11-14 16:24:55,016 - src.intellit_adapter - WARNING - ⚠️ Only 0 questions available, requested 55
+2025-11-14 16:24:55,016 - src.intellit_adapter - WARNING - ⚠️ Only 0 BEGINNER questions available, need 22
+2025-11-14 16:24:55,016 - src.intellit_adapter - WARNING - ⚠️ Only 0 INTERMEDIATE questions available, need 22
+2025-11-14 16:24:55,016 - src.intellit_adapter - WARNING - ⚠️ Only 0 ADVANCED questions available, need 11
+2025-11-14 16:24:55,016 - src.intellit_adapter - INFO - 📊 Stratified split: 0 train, 0 test
+2025-11-14 16:24:55,016 - src.intellit_adapter - INFO - ✅ Prepared 0 train + 0 test questions
+2025-11-14 16:24:55,016 - src.simulation_engine - INFO - ✅ SimulationEngine initialized: 1 personas, 2 days, agents=OFF
+2025-11-14 16:24:55,016 - src.simulation_engine - INFO - 🚀 Starting 2-day simulation...
+2025-11-14 16:24:55,016 - src.simulation_engine - INFO - 
+📅 Day 1/2
+2025-11-14 16:24:55,016 - src.simulation_engine - INFO -    1/1 personas practiced today
+2025-11-14 16:24:55,016 - src.simulation_engine - INFO - 
+📅 Day 2/2
+2025-11-14 16:24:55,016 - src.simulation_engine - INFO -    1/1 personas practiced today
+2025-11-14 16:24:55,016 - src.simulation_engine - INFO - 
+✅ Simulation completed in 0.0s
+2025-11-14 16:24:55,016 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:24:55,016 - src.trajectory_tracker - INFO - 💾 Saving 1 trajectories...
+2025-11-14 16:24:55,017 - src.trajectory_tracker - INFO - ✅ All trajectories saved to results/trajectories/control
+2025-11-14 16:24:55,018 - __main__ - INFO -   Control Group Stats:
+2025-11-14 16:24:55,018 - __main__ - INFO -     total_personas                 1
+2025-11-14 16:24:55,018 - __main__ - INFO -     total_days                     2
+2025-11-14 16:24:55,018 - __main__ - INFO -     active_days                    2
+2025-11-14 16:24:55,018 - __main__ - INFO -     activity_rate                  1.0
+2025-11-14 16:24:55,018 - __main__ - INFO -     total_problems_attempted       0
+2025-11-14 16:24:55,018 - __main__ - INFO -     total_problems_solved          0
+2025-11-14 16:24:55,018 - __main__ - INFO -     success_rate                   0.0
+2025-11-14 16:24:55,018 - __main__ - INFO -     total_hints_used               0
+2025-11-14 16:24:55,018 - __main__ - INFO -     avg_hints_per_problem          0.0
+2025-11-14 16:24:55,018 - __main__ - INFO -     avg_mastery_gain               0.0
+2025-11-14 16:24:55,018 - __main__ - INFO -     median_mastery_gain            0.0
+2025-11-14 16:24:55,018 - __main__ - INFO -     mastery_gain_std               0.0
+2025-11-14 16:24:55,018 - __main__ - INFO - 
+📊 PHASE 6: Computing Metrics and Statistical Analysis
+2025-11-14 16:24:55,018 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:24:55,018 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:24:55,018 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:24:55,018 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:24:55,018 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories
+2025-11-14 16:24:55,018 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:24:55,018 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:24:55,018 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:24:55,019 - __main__ - INFO - 
+🔍 Fairness Analysis:
+2025-11-14 16:24:55,019 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:24:55,020 - __main__ - INFO -   Overall Fairness Score: 0.000
+2025-11-14 16:24:55,020 - __main__ - INFO -   Target Threshold: 0.15
+2025-11-14 16:24:55,020 - __main__ - INFO -   Meets Criterion: True
+2025-11-14 16:24:55,020 - __main__ - INFO - 
+📈 PHASE 7: Generating Visualizations
+2025-11-14 16:24:55,020 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:24:55,020 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:24:55,020 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories
+2025-11-14 16:24:55,020 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:24:55,020 - src.visualizations - INFO - ✅ VisualizationGenerator initialized: results/figures
+2025-11-14 16:24:55,020 - src.visualizations - INFO - 📊 Generating all figures...
+2025-11-14 16:24:55,563 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:24:55,563 - src.visualizations - WARNING - ⚠️ No trajectory data available for plotting
+2025-11-14 16:24:55,574 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:24:55,576 - __main__ - ERROR - 
+❌ SIMULATION FAILED: zero-size array to reduction operation minimum which has no identity
+2025-11-14 16:29:22,991 - __main__ - INFO - ================================================================================
+2025-11-14 16:29:22,991 - __main__ - INFO - 🚀 SYNTHETIC USER EVALUATION - IntelliT Multi-Agent System
+2025-11-14 16:29:22,991 - __main__ - INFO - ================================================================================
+2025-11-14 16:29:22,991 - __main__ - INFO - Configuration:
+2025-11-14 16:29:22,991 - __main__ - INFO -   random_seed: 42
+2025-11-14 16:29:22,992 - __main__ - INFO -   results_dir: results
+2025-11-14 16:29:22,992 - __main__ - INFO -   n_users: 1
+2025-11-14 16:29:22,992 - __main__ - INFO -   persona_distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:29:22,992 - __main__ - INFO -   simulation_config: {'n_days': 2, 'problems_per_day': 1, 'hint_threshold': 0.6, 'max_hints_per_problem': 3, 'review_ratio': 0.4, 'growth_ratio': 0.5, 'challenge_ratio': 0.1}
+2025-11-14 16:29:22,992 - __main__ - INFO - ================================================================================
+2025-11-14 16:29:22,992 - __main__ - INFO - 
+📝 PHASE 1: Generating Synthetic Student Personas
+2025-11-14 16:29:22,992 - src.persona_generator - INFO - ✅ PersonaGenerator initialized with seed 42
+2025-11-14 16:29:22,992 - src.persona_generator - INFO - 🎭 Generating 1 personas with distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:29:22,992 - src.persona_generator - INFO - 📊 Target counts: {'beginner': 1, 'intermediate': 0, 'advanced': 0}
+2025-11-14 16:29:22,992 - src.persona_generator - INFO - ✅ Generated 1 personas
+2025-11-14 16:29:22,992 - src.persona_generator - INFO - 📊 Persona Statistics:
+2025-11-14 16:29:22,992 - src.persona_generator - INFO -   BEGINNER     n= 1 | mastery=0.092 | lr=0.118 | hint=0.820 | consistency=0.775
+2025-11-14 16:29:22,992 - src.persona_generator - INFO - 💾 Saved 1 personas to results/personas.json
+2025-11-14 16:29:22,992 - __main__ - INFO - 
+🔧 PHASE 2: Setting Up Data Adapter
+2025-11-14 16:29:23,019 - app.db.database - INFO - Database connection established
+2025-11-14 16:29:23,019 - src.intellit_adapter - INFO - ✅ IntelliTAdapter initialized with seed 42
+2025-11-14 16:29:23,019 - __main__ - INFO - Verifying database connection and question availability...
+2025-11-14 16:29:23,019 - __main__ - INFO - 
+✂️ PHASE 3: Splitting into Experimental and Control Groups
+2025-11-14 16:29:23,019 - __main__ - INFO -   Experimental group: 0 personas
+2025-11-14 16:29:23,019 - __main__ - INFO -   Control group: 1 personas
+2025-11-14 16:29:23,019 - __main__ - INFO -   Experimental skill distribution: {}
+2025-11-14 16:29:23,019 - __main__ - INFO -   Control skill distribution: {'beginner': 1}
+2025-11-14 16:29:23,019 - __main__ - INFO - 
+🧪 PHASE 4: Running EXPERIMENTAL Group (With Agents)
+2025-11-14 16:29:23,019 - src.intellit_adapter - INFO - 🎯 Target: 40 train + 15 test questions
+2025-11-14 16:29:23,019 - src.intellit_adapter - INFO - 📊 Difficulty mix: {'BEGINNER': 0.4, 'INTERMEDIATE': 0.4, 'ADVANCED': 0.2}
+2025-11-14 16:29:23,019 - src.intellit_adapter - INFO - 📥 Fetching questions from IntelliT roadmap database...
+2025-11-14 16:29:23,054 - src.intellit_adapter - INFO - ✅ Fetched 244 questions from Striver's A2Z roadmap
+2025-11-14 16:29:23,054 - src.intellit_adapter - INFO - 📊 Stratified split: 40 train, 15 test
+2025-11-14 16:29:23,054 - src.intellit_adapter - INFO - ✅ Prepared 40 train + 15 test questions
+2025-11-14 16:29:23,054 - src.simulation_engine - INFO - ✅ SimulationEngine initialized: 0 personas, 2 days, agents=ON
+2025-11-14 16:29:23,054 - src.simulation_engine - INFO - 🚀 Starting 2-day simulation...
+2025-11-14 16:29:23,054 - src.simulation_engine - INFO - 
+📅 Day 1/2
+2025-11-14 16:29:23,054 - src.simulation_engine - INFO -    0/0 personas practiced today
+2025-11-14 16:29:23,054 - src.simulation_engine - INFO - 
+📅 Day 2/2
+2025-11-14 16:29:23,054 - src.simulation_engine - INFO -    0/0 personas practiced today
+2025-11-14 16:29:23,054 - src.simulation_engine - INFO - 
+✅ Simulation completed in 0.0s
+2025-11-14 16:29:23,054 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:29:23,054 - src.trajectory_tracker - INFO - 💾 Saving 0 trajectories...
+2025-11-14 16:29:23,054 - src.trajectory_tracker - INFO - ✅ All trajectories saved to results/trajectories/experimental
+2025-11-14 16:29:23,054 - __main__ - INFO -   Experimental Group Stats:
+2025-11-14 16:29:23,054 - __main__ - INFO -     total_personas                 0
+2025-11-14 16:29:23,054 - __main__ - INFO -     total_days                     2
+2025-11-14 16:29:23,054 - __main__ - INFO -     active_days                    0
+2025-11-14 16:29:23,054 - __main__ - INFO -     activity_rate                  0.0
+2025-11-14 16:29:23,054 - __main__ - INFO -     total_problems_attempted       0
+2025-11-14 16:29:23,054 - __main__ - INFO -     total_problems_solved          0
+2025-11-14 16:29:23,055 - __main__ - INFO -     success_rate                   0.0
+2025-11-14 16:29:23,055 - __main__ - INFO -     total_hints_used               0
+2025-11-14 16:29:23,055 - __main__ - INFO -     avg_hints_per_problem          0.0
+2025-11-14 16:29:23,055 - __main__ - INFO -     avg_mastery_gain               0.0
+2025-11-14 16:29:23,055 - __main__ - INFO -     median_mastery_gain            0.0
+2025-11-14 16:29:23,055 - __main__ - INFO -     mastery_gain_std               0.0
+2025-11-14 16:29:23,055 - __main__ - INFO - 
+🎯 PHASE 5: Running CONTROL Group (Without Agents)
+2025-11-14 16:29:23,055 - src.intellit_adapter - INFO - 🎯 Target: 40 train + 15 test questions
+2025-11-14 16:29:23,055 - src.intellit_adapter - INFO - 📊 Difficulty mix: {'BEGINNER': 0.4, 'INTERMEDIATE': 0.4, 'ADVANCED': 0.2}
+2025-11-14 16:29:23,055 - src.intellit_adapter - INFO - 📥 Fetching questions from IntelliT roadmap database...
+2025-11-14 16:29:23,069 - src.intellit_adapter - INFO - ✅ Fetched 244 questions from Striver's A2Z roadmap
+2025-11-14 16:29:23,069 - src.intellit_adapter - INFO - 📊 Stratified split: 40 train, 15 test
+2025-11-14 16:29:23,070 - src.intellit_adapter - INFO - ✅ Prepared 40 train + 15 test questions
+2025-11-14 16:29:23,070 - src.simulation_engine - INFO - ✅ SimulationEngine initialized: 1 personas, 2 days, agents=OFF
+2025-11-14 16:29:23,070 - src.simulation_engine - INFO - 🚀 Starting 2-day simulation...
+2025-11-14 16:29:23,070 - src.simulation_engine - INFO - 
+📅 Day 1/2
+2025-11-14 16:29:23,070 - src.simulation_engine - INFO -    1/1 personas practiced today
+2025-11-14 16:29:23,070 - src.simulation_engine - INFO - 
+📅 Day 2/2
+2025-11-14 16:29:23,071 - src.simulation_engine - INFO -    1/1 personas practiced today
+2025-11-14 16:29:23,071 - src.simulation_engine - INFO - 
+✅ Simulation completed in 0.0s
+2025-11-14 16:29:23,071 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:29:23,071 - src.trajectory_tracker - INFO - 💾 Saving 1 trajectories...
+2025-11-14 16:29:23,071 - src.trajectory_tracker - INFO - ✅ All trajectories saved to results/trajectories/control
+2025-11-14 16:29:23,072 - __main__ - INFO -   Control Group Stats:
+2025-11-14 16:29:23,072 - __main__ - INFO -     total_personas                 1
+2025-11-14 16:29:23,072 - __main__ - INFO -     total_days                     2
+2025-11-14 16:29:23,072 - __main__ - INFO -     active_days                    2
+2025-11-14 16:29:23,072 - __main__ - INFO -     activity_rate                  1.0
+2025-11-14 16:29:23,072 - __main__ - INFO -     total_problems_attempted       2
+2025-11-14 16:29:23,072 - __main__ - INFO -     total_problems_solved          0
+2025-11-14 16:29:23,072 - __main__ - INFO -     success_rate                   0.0
+2025-11-14 16:29:23,072 - __main__ - INFO -     total_hints_used               0
+2025-11-14 16:29:23,072 - __main__ - INFO -     avg_hints_per_problem          0.0
+2025-11-14 16:29:23,072 - __main__ - INFO -     avg_mastery_gain               -0.0023834155771775833
+2025-11-14 16:29:23,072 - __main__ - INFO -     median_mastery_gain            -0.0023834155771775833
+2025-11-14 16:29:23,072 - __main__ - INFO -     mastery_gain_std               0.0
+2025-11-14 16:29:23,072 - __main__ - INFO - 
+📊 PHASE 6: Computing Metrics and Statistical Analysis
+2025-11-14 16:29:23,072 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:29:23,072 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:29:23,072 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:29:23,072 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:29:23,072 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories
+2025-11-14 16:29:23,072 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:29:23,072 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:29:23,072 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:29:23,072 - __main__ - INFO - 
+🔍 Fairness Analysis:
+2025-11-14 16:29:23,072 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:29:23,072 - __main__ - INFO -   Overall Fairness Score: 0.000
+2025-11-14 16:29:23,072 - __main__ - INFO -   Target Threshold: 0.15
+2025-11-14 16:29:23,072 - __main__ - INFO -   Meets Criterion: True
+2025-11-14 16:29:23,072 - __main__ - INFO - 
+📈 PHASE 7: Generating Visualizations
+2025-11-14 16:29:23,072 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:29:23,072 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:29:23,072 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories
+2025-11-14 16:29:23,072 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:29:23,072 - src.visualizations - INFO - ✅ VisualizationGenerator initialized: results/figures
+2025-11-14 16:29:23,072 - src.visualizations - INFO - 📊 Generating all figures...
+2025-11-14 16:29:23,194 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:29:23,194 - src.visualizations - WARNING - ⚠️ No trajectory data available for plotting
+2025-11-14 16:29:23,204 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:29:23,892 - src.visualizations - INFO - 💾 Saved distribution plot to results/figures/mastery_gain_distribution.png
+2025-11-14 16:29:23,892 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:29:23,892 - src.visualizations - WARNING - ⚠️ No mastery data available for heatmap
+2025-11-14 16:29:24,152 - src.visualizations - INFO - 💾 Saved ablation summary to results/figures/ablation_summary.png
+2025-11-14 16:29:24,153 - src.visualizations - INFO - ✅ All figures saved to results/figures
+2025-11-14 16:29:24,153 - __main__ - INFO - 
+💾 PHASE 8: Saving Final Results
+2025-11-14 16:29:24,153 - __main__ - INFO -   Results saved to: results/simulation_results.json
+2025-11-14 16:29:24,153 - __main__ - INFO - 
+================================================================================
+2025-11-14 16:29:24,153 - __main__ - INFO - ✅ SIMULATION COMPLETED SUCCESSFULLY!
+2025-11-14 16:29:24,153 - __main__ - INFO - ================================================================================
+2025-11-14 16:31:32,536 - __main__ - INFO - ================================================================================
+2025-11-14 16:31:32,537 - __main__ - INFO - 🚀 SYNTHETIC USER EVALUATION - IntelliT Multi-Agent System
+2025-11-14 16:31:32,537 - __main__ - INFO - ================================================================================
+2025-11-14 16:31:32,537 - __main__ - INFO - Configuration:
+2025-11-14 16:31:32,537 - __main__ - INFO -   random_seed: 42
+2025-11-14 16:31:32,537 - __main__ - INFO -   results_dir: results
+2025-11-14 16:31:32,537 - __main__ - INFO -   n_users: 6
+2025-11-14 16:31:32,537 - __main__ - INFO -   persona_distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:31:32,537 - __main__ - INFO -   simulation_config: {'n_days': 5, 'problems_per_day': 3, 'hint_threshold': 0.6, 'max_hints_per_problem': 3, 'review_ratio': 0.4, 'growth_ratio': 0.5, 'challenge_ratio': 0.1}
+2025-11-14 16:31:32,537 - __main__ - INFO - ================================================================================
+2025-11-14 16:31:32,537 - __main__ - INFO - 
+📝 PHASE 1: Generating Synthetic Student Personas
+2025-11-14 16:31:32,537 - src.persona_generator - INFO - ✅ PersonaGenerator initialized with seed 42
+2025-11-14 16:31:32,537 - src.persona_generator - INFO - 🎭 Generating 6 personas with distribution: {'beginner': 0.4, 'intermediate': 0.4, 'advanced': 0.2}
+2025-11-14 16:31:32,537 - src.persona_generator - INFO - 📊 Target counts: {'beginner': 3, 'intermediate': 2, 'advanced': 1}
+2025-11-14 16:31:32,537 - src.persona_generator - INFO - ✅ Generated 6 personas
+2025-11-14 16:31:32,537 - src.persona_generator - INFO - 📊 Persona Statistics:
+2025-11-14 16:31:32,537 - src.persona_generator - INFO -   BEGINNER     n= 3 | mastery=0.084 | lr=0.106 | hint=0.750 | consistency=0.639
+2025-11-14 16:31:32,538 - src.persona_generator - INFO -   INTERMEDIATE n= 2 | mastery=0.478 | lr=0.158 | hint=0.329 | consistency=0.716
+2025-11-14 16:31:32,538 - src.persona_generator - INFO -   ADVANCED     n= 1 | mastery=0.759 | lr=0.058 | hint=0.286 | consistency=0.688
+2025-11-14 16:31:32,538 - src.persona_generator - INFO - 💾 Saved 6 personas to results/personas.json
+2025-11-14 16:31:32,538 - __main__ - INFO - 
+🔧 PHASE 2: Setting Up Data Adapter
+2025-11-14 16:31:32,566 - app.db.database - INFO - Database connection established
+2025-11-14 16:31:32,566 - src.intellit_adapter - INFO - ✅ IntelliTAdapter initialized with seed 42
+2025-11-14 16:31:32,566 - __main__ - INFO - Verifying database connection and question availability...
+2025-11-14 16:31:32,566 - __main__ - INFO - 
+✂️ PHASE 3: Splitting into Experimental and Control Groups
+2025-11-14 16:31:32,566 - __main__ - INFO -   Experimental group: 3 personas
+2025-11-14 16:31:32,566 - __main__ - INFO -   Control group: 3 personas
+2025-11-14 16:31:32,566 - __main__ - INFO -   Experimental skill distribution: {'intermediate': 1, 'beginner': 2}
+2025-11-14 16:31:32,566 - __main__ - INFO -   Control skill distribution: {'advanced': 1, 'intermediate': 1, 'beginner': 1}
+2025-11-14 16:31:32,566 - __main__ - INFO - 
+🧪 PHASE 4: Running EXPERIMENTAL Group (With Agents)
+2025-11-14 16:31:32,566 - src.intellit_adapter - INFO - 🎯 Target: 40 train + 15 test questions
+2025-11-14 16:31:32,567 - src.intellit_adapter - INFO - 📊 Difficulty mix: {'BEGINNER': 0.4, 'INTERMEDIATE': 0.4, 'ADVANCED': 0.2}
+2025-11-14 16:31:32,567 - src.intellit_adapter - INFO - 📥 Fetching questions from IntelliT roadmap database...
+2025-11-14 16:31:32,602 - src.intellit_adapter - INFO - ✅ Fetched 244 questions from Striver's A2Z roadmap
+2025-11-14 16:31:32,602 - src.intellit_adapter - INFO - 📊 Stratified split: 40 train, 15 test
+2025-11-14 16:31:32,602 - src.intellit_adapter - INFO - ✅ Prepared 40 train + 15 test questions
+2025-11-14 16:31:32,602 - src.simulation_engine - INFO - ✅ SimulationEngine initialized: 3 personas, 5 days, agents=ON
+2025-11-14 16:31:32,602 - src.simulation_engine - INFO - 🚀 Starting 5-day simulation...
+2025-11-14 16:31:32,602 - src.simulation_engine - INFO - 
+📅 Day 1/5
+2025-11-14 16:31:32,603 - src.simulation_engine - INFO -    1/3 personas practiced today
+2025-11-14 16:31:32,603 - src.simulation_engine - INFO - 
+📅 Day 2/5
+2025-11-14 16:31:32,603 - src.simulation_engine - INFO -    0/3 personas practiced today
+2025-11-14 16:31:32,603 - src.simulation_engine - INFO - 
+📅 Day 3/5
+2025-11-14 16:31:32,604 - src.simulation_engine - INFO -    1/3 personas practiced today
+2025-11-14 16:31:32,604 - src.simulation_engine - INFO - 
+📅 Day 4/5
+2025-11-14 16:31:32,605 - src.simulation_engine - INFO -    2/3 personas practiced today
+2025-11-14 16:31:32,605 - src.simulation_engine - INFO - 
+📅 Day 5/5
+2025-11-14 16:31:32,607 - src.simulation_engine - INFO -    3/3 personas practiced today
+2025-11-14 16:31:32,607 - src.simulation_engine - INFO - 
+✅ Simulation completed in 0.0s
+2025-11-14 16:31:32,607 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:31:32,607 - src.trajectory_tracker - INFO - 💾 Saving 3 trajectories...
+2025-11-14 16:31:32,608 - src.trajectory_tracker - INFO - ✅ All trajectories saved to results/trajectories/experimental
+2025-11-14 16:31:32,609 - __main__ - INFO -   Experimental Group Stats:
+2025-11-14 16:31:32,609 - __main__ - INFO -     total_personas                 3
+2025-11-14 16:31:32,609 - __main__ - INFO -     total_days                     5
+2025-11-14 16:31:32,609 - __main__ - INFO -     active_days                    7
+2025-11-14 16:31:32,609 - __main__ - INFO -     activity_rate                  0.4666666666666667
+2025-11-14 16:31:32,609 - __main__ - INFO -     total_problems_attempted       21
+2025-11-14 16:31:32,609 - __main__ - INFO -     total_problems_solved          10
+2025-11-14 16:31:32,609 - __main__ - INFO -     success_rate                   0.47619047619047616
+2025-11-14 16:31:32,609 - __main__ - INFO -     total_hints_used               19
+2025-11-14 16:31:32,609 - __main__ - INFO -     avg_hints_per_problem          0.9047619047619048
+2025-11-14 16:31:32,609 - __main__ - INFO -     avg_mastery_gain               -0.04323091800173898
+2025-11-14 16:31:32,609 - __main__ - INFO -     median_mastery_gain            -0.026185564292292934
+2025-11-14 16:31:32,609 - __main__ - INFO -     mastery_gain_std               0.031567365450330585
+2025-11-14 16:31:32,609 - __main__ - INFO - 
+🎯 PHASE 5: Running CONTROL Group (Without Agents)
+2025-11-14 16:31:32,609 - src.intellit_adapter - INFO - 🎯 Target: 40 train + 15 test questions
+2025-11-14 16:31:32,609 - src.intellit_adapter - INFO - 📊 Difficulty mix: {'BEGINNER': 0.4, 'INTERMEDIATE': 0.4, 'ADVANCED': 0.2}
+2025-11-14 16:31:32,609 - src.intellit_adapter - INFO - 📥 Fetching questions from IntelliT roadmap database...
+2025-11-14 16:31:32,622 - src.intellit_adapter - INFO - ✅ Fetched 244 questions from Striver's A2Z roadmap
+2025-11-14 16:31:32,622 - src.intellit_adapter - INFO - 📊 Stratified split: 40 train, 15 test
+2025-11-14 16:31:32,623 - src.intellit_adapter - INFO - ✅ Prepared 40 train + 15 test questions
+2025-11-14 16:31:32,623 - src.simulation_engine - INFO - ✅ SimulationEngine initialized: 3 personas, 5 days, agents=OFF
+2025-11-14 16:31:32,623 - src.simulation_engine - INFO - 🚀 Starting 5-day simulation...
+2025-11-14 16:31:32,623 - src.simulation_engine - INFO - 
+📅 Day 1/5
+2025-11-14 16:31:32,624 - src.simulation_engine - INFO -    2/3 personas practiced today
+2025-11-14 16:31:32,624 - src.simulation_engine - INFO - 
+📅 Day 2/5
+2025-11-14 16:31:32,624 - src.simulation_engine - INFO -    0/3 personas practiced today
+2025-11-14 16:31:32,624 - src.simulation_engine - INFO - 
+📅 Day 3/5
+2025-11-14 16:31:32,625 - src.simulation_engine - INFO -    2/3 personas practiced today
+2025-11-14 16:31:32,625 - src.simulation_engine - INFO - 
+📅 Day 4/5
+2025-11-14 16:31:32,626 - src.simulation_engine - INFO -    2/3 personas practiced today
+2025-11-14 16:31:32,626 - src.simulation_engine - INFO - 
+📅 Day 5/5
+2025-11-14 16:31:32,627 - src.simulation_engine - INFO -    1/3 personas practiced today
+2025-11-14 16:31:32,627 - src.simulation_engine - INFO - 
+✅ Simulation completed in 0.0s
+2025-11-14 16:31:32,627 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:31:32,627 - src.trajectory_tracker - INFO - 💾 Saving 3 trajectories...
+2025-11-14 16:31:32,628 - src.trajectory_tracker - INFO - ✅ All trajectories saved to results/trajectories/control
+2025-11-14 16:31:32,628 - __main__ - INFO -   Control Group Stats:
+2025-11-14 16:31:32,628 - __main__ - INFO -     total_personas                 3
+2025-11-14 16:31:32,628 - __main__ - INFO -     total_days                     5
+2025-11-14 16:31:32,628 - __main__ - INFO -     active_days                    7
+2025-11-14 16:31:32,628 - __main__ - INFO -     activity_rate                  0.4666666666666667
+2025-11-14 16:31:32,628 - __main__ - INFO -     total_problems_attempted       21
+2025-11-14 16:31:32,628 - __main__ - INFO -     total_problems_solved          9
+2025-11-14 16:31:32,628 - __main__ - INFO -     success_rate                   0.42857142857142855
+2025-11-14 16:31:32,628 - __main__ - INFO -     total_hints_used               0
+2025-11-14 16:31:32,628 - __main__ - INFO -     avg_hints_per_problem          0.0
+2025-11-14 16:31:32,628 - __main__ - INFO -     avg_mastery_gain               -0.0353959616700128
+2025-11-14 16:31:32,628 - __main__ - INFO -     median_mastery_gain            -0.03911984455843753
+2025-11-14 16:31:32,628 - __main__ - INFO -     mastery_gain_std               0.009289487753952675
+2025-11-14 16:31:32,628 - __main__ - INFO - 
+📊 PHASE 6: Computing Metrics and Statistical Analysis
+2025-11-14 16:31:32,628 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:31:32,628 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:31:32,628 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:31:32,628 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:31:32,628 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories
+2025-11-14 16:31:32,628 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:31:32,628 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_005.jsonl
+2025-11-14 16:31:32,628 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_003.jsonl
+2025-11-14 16:31:32,628 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_002.jsonl
+2025-11-14 16:31:32,628 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_advanced_006.jsonl
+2025-11-14 16:31:32,628 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_004.jsonl
+2025-11-14 16:31:32,628 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_005.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_003.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_002.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_advanced_006.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_004.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:31:32,629 - __main__ - INFO - 
+🔍 Fairness Analysis:
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_005.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_003.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_002.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_advanced_006.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_004.jsonl
+2025-11-14 16:31:32,629 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:31:32,630 - __main__ - INFO -   Overall Fairness Score: 0.000
+2025-11-14 16:31:32,630 - __main__ - INFO -   Target Threshold: 0.15
+2025-11-14 16:31:32,630 - __main__ - INFO -   Meets Criterion: True
+2025-11-14 16:31:32,630 - __main__ - INFO - 
+📈 PHASE 7: Generating Visualizations
+2025-11-14 16:31:32,630 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/experimental
+2025-11-14 16:31:32,630 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories/control
+2025-11-14 16:31:32,630 - src.trajectory_tracker - INFO - ✅ TrajectoryTracker initialized: results/trajectories
+2025-11-14 16:31:32,630 - src.metrics_calculator - INFO - ✅ MetricsCalculator initialized
+2025-11-14 16:31:32,630 - src.visualizations - INFO - ✅ VisualizationGenerator initialized: results/figures
+2025-11-14 16:31:32,630 - src.visualizations - INFO - 📊 Generating all figures...
+2025-11-14 16:31:32,754 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_005.jsonl
+2025-11-14 16:31:32,754 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_003.jsonl
+2025-11-14 16:31:32,754 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_002.jsonl
+2025-11-14 16:31:32,755 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_advanced_006.jsonl
+2025-11-14 16:31:32,755 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_004.jsonl
+2025-11-14 16:31:32,755 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:31:32,755 - src.visualizations - WARNING - ⚠️ No trajectory data available for plotting
+2025-11-14 16:31:32,764 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_005.jsonl
+2025-11-14 16:31:32,764 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_003.jsonl
+2025-11-14 16:31:32,764 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_002.jsonl
+2025-11-14 16:31:32,764 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_advanced_006.jsonl
+2025-11-14 16:31:32,764 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_004.jsonl
+2025-11-14 16:31:32,764 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:31:32,851 - src.visualizations - INFO - 💾 Saved distribution plot to results/figures/mastery_gain_distribution.png
+2025-11-14 16:31:32,852 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_005.jsonl
+2025-11-14 16:31:32,852 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_003.jsonl
+2025-11-14 16:31:32,852 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_002.jsonl
+2025-11-14 16:31:32,852 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_advanced_006.jsonl
+2025-11-14 16:31:32,852 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_intermediate_004.jsonl
+2025-11-14 16:31:32,852 - src.trajectory_tracker - WARNING - ⚠️ Trajectory file not found: results/trajectories/synthetic_beginner_001.jsonl
+2025-11-14 16:31:32,852 - src.visualizations - WARNING - ⚠️ No mastery data available for heatmap
+2025-11-14 16:31:33,112 - src.visualizations - INFO - 💾 Saved ablation summary to results/figures/ablation_summary.png
+2025-11-14 16:31:33,112 - src.visualizations - INFO - ✅ All figures saved to results/figures
+2025-11-14 16:31:33,112 - __main__ - INFO - 
+💾 PHASE 8: Saving Final Results
+2025-11-14 16:31:33,112 - __main__ - INFO -   Results saved to: results/simulation_results.json
+2025-11-14 16:31:33,112 - __main__ - INFO - 
+================================================================================
+2025-11-14 16:31:33,112 - __main__ - INFO - ✅ SIMULATION COMPLETED SUCCESSFULLY!
+2025-11-14 16:31:33,112 - __main__ - INFO - ================================================================================

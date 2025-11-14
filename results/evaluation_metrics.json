@@ -1,0 +1,60 @@
+{
+  "offline": {
+    "mastery_calibration": {
+      "brier_score": 0.0,
+      "correlation": 0.0,
+      "n_predictions": 0
+    },
+    "content_coverage": {
+      "unique_topics_covered": 0,
+      "coverage_coefficient_of_variation": 0,
+      "topic_distribution": {}
+    }
+  },
+  "online": {
+    "learning_gains": {
+      "mean": 0,
+      "std": 0,
+      "median": 0,
+      "min": 0,
+      "max": 0,
+      "n": 0
+    },
+    "time_to_mastery": {
+      "mean_days": null,
+      "median_days": null,
+      "n_reached_mastery": 0,
+      "pct_reached_mastery": 0
+    },
+    "learning_velocity": {
+      "mean_gain_per_day": 0,
+      "median_gain_per_day": 0
+    },
+    "engagement": {
+      "mean_active_days": 0,
+      "mean_success_rate": 0,
+      "mean_hints_per_problem": 0
+    }
+  },
+  "agent": {
+    "hint_effectiveness": {
+      "total_hint_interactions": 0,
+      "success_rate_with_hints": 0.0,
+      "mean_hints_per_interaction": 0
+    },
+    "code_analysis": {
+      "total_analyses": 0,
+      "mean_suggestions_per_analysis": 0,
+      "analyses_on_successful_submissions": 0
+    }
+  },
+  "fairness": {
+    "learning_gains_by_skill": {},
+    "fairness_analysis": {}
+  },
+  "metadata": {
+    "calculation_time": "2025-11-14T12:31:38.523705",
+    "total_trajectories": 0,
+    "total_personas": 1
+  }
+}
