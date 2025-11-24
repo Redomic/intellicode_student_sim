@@ -31,6 +31,25 @@ class MetricsTracker:
         self.trajectories = {}
         self.personas = {}
     
+    def _sanitize_for_json(self, obj):
+        """Convert numpy types to native Python types for JSON serialization."""
+        if isinstance(obj, dict):
+            return {key: self._sanitize_for_json(value) for key, value in obj.items()}
+        elif isinstance(obj, (list, tuple)):
+            return [self._sanitize_for_json(item) for item in obj]
+        elif isinstance(obj, (np.bool_, np.bool8)):
+            return bool(obj)
+        elif isinstance(obj, (np.integer, np.int64, np.int32)):
+            return int(obj)
+        elif isinstance(obj, (np.floating, np.float64, np.float32)):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif np.isnan(obj) if isinstance(obj, (int, float)) else False:
+            return None
+        else:
+            return obj
+    
     def load_trajectories(self, trajectory_dir: str = "student_sim/results/trajectories"):
         """
         Load all trajectory files from directory.
@@ -350,13 +369,18 @@ class MetricsTracker:
         try:
             os.makedirs(os.path.dirname(filepath), exist_ok=True)
             
+            # Sanitize metrics to convert numpy types to native Python types
+            sanitized_metrics = self._sanitize_for_json(self.metrics)
+            
             with open(filepath, 'w') as f:
-                json.dump(self.metrics, f, indent=2)
+                json.dump(sanitized_metrics, f, indent=2)
             
             print(f"\n✅ Metrics saved to {filepath}")
             
         except Exception as e:
             print(f"\n❌ Error saving metrics: {e}")
+            import traceback
+            traceback.print_exc()
     
     def print_summary(self):
         """Print human-readable summary of metrics."""
