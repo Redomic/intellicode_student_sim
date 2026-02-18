@@ -28,7 +28,8 @@ from .agent_integration import IntelliTAPIClient
 from .cognitive_behavior import (
     predict_student_errors,
     update_cognitive_state,
-    calculate_target_success_rate
+    calculate_target_success_rate,
+    normalize_topic_name
 )
 from .error_injection import generate_code_with_errors
 from .simulation_logger import get_logger
@@ -99,7 +100,8 @@ def select_problem_for_persona(
     persona: SyntheticPersona,
     questions: List[Dict[str, Any]],
     day: int,
-    attempted_questions: set
+    attempted_questions: set,
+    stateless: bool = False
 ) -> Optional[Dict[str, Any]]:
     """
     Select appropriate problem for persona based on their mastery.
@@ -114,6 +116,7 @@ def select_problem_for_persona(
         questions: Available questions
         day: Current day number
         attempted_questions: Set of question IDs already attempted recently
+        stateless: If True, select random problem ignoring mastery (baseline mode)
     
     Returns:
         Selected question dict or None
@@ -131,6 +134,10 @@ def select_problem_for_persona(
         # If all attempted, clear history and use all
         available_questions = questions
         attempted_questions.clear()
+        
+    # Stateless baseline: Select completely randomly
+    if stateless:
+        return random.choice(available_questions)
     
     # Calculate topic difficulties based on persona's mastery
     scored_questions = []
@@ -141,9 +148,11 @@ def select_problem_for_persona(
             continue
         
         # Calculate average mastery for this question's topics
+        # Normalize topic names to match persona.current_mastery keys
+        normalized_topics = [normalize_topic_name(t) for t in topics]
         topic_masteries = [
             persona.current_mastery.get(t, 0.5) 
-            for t in topics
+            for t in normalized_topics
         ]
         avg_mastery = sum(topic_masteries) / len(topic_masteries) if topic_masteries else 0.5
         
@@ -171,6 +180,24 @@ def select_problem_for_persona(
     selected = random.choice(scored_questions[:top_n])[0]
     
     return selected
+
+
+def apply_forgetting_decay(persona: SyntheticPersona):
+    """
+    Apply forgetting decay to all topics when student doesn't practice.
+    
+    Based on Ebbinghaus forgetting curve - knowledge decays without practice.
+    Uses persona's forgetting_rate parameter.
+    
+    Args:
+        persona: SyntheticPersona to update
+    """
+    decay_factor = 1.0 - (persona.forgetting_rate * 0.3)
+    for topic in persona.current_mastery:
+        persona.current_mastery[topic] = max(
+            0.0,
+            persona.current_mastery[topic] * decay_factor
+        )
 
 
 async def generate_code_with_cognitive_modeling(
@@ -236,7 +263,8 @@ async def simulate_problem_attempt(
     api_client: IntelliTAPIClient,
     problem: Dict[str, Any],
     max_attempts: int = 3,
-    use_hints: bool = True
+    use_hints: bool = True,
+    stateless: bool = False
 ) -> Dict[str, Any]:
     """
     Simulate attempting a single problem with multiple tries and hint requests.
@@ -254,10 +282,16 @@ async def simulate_problem_attempt(
         problem: Question dict
         max_attempts: Maximum attempts allowed (default: 3)
         use_hints: Whether to request hints on failures (default: True)
+        stateless: If True, force single attempt with no hints (baseline mode)
     
     Returns:
         Dict with attempt results and metrics
     """
+    # Override settings for stateless baseline
+    if stateless:
+        max_attempts = 1
+        use_hints = False
+    
     persona = api_client.persona
     
     # Start session
@@ -401,7 +435,8 @@ async def simulate_14_day_trajectory(
     persona: SyntheticPersona,
     questions: List[Dict[str, Any]],
     save_trajectory: bool = True,
-    output_dir: str = "results/trajectories"
+    output_dir: str = "results/trajectories",
+    stateless: bool = False
 ) -> List[DailyMetrics]:
     """
     Simulate 14-day learning trajectory for a single persona using backend API.
@@ -409,7 +444,7 @@ async def simulate_14_day_trajectory(
     This is the core simulation loop:
     - Login once at start
     - For each day:
-      - Select problem based on mastery
+      - Select problem based on mastery (or random if stateless)
       - Create session
       - Make multiple attempts with hints
       - Submit code (automatic learner state updates)
@@ -421,6 +456,7 @@ async def simulate_14_day_trajectory(
         questions: List of available questions
         save_trajectory: If True, save daily metrics to file (default: True)
         output_dir: Directory to save trajectory files
+        stateless: If True, run in stateless baseline mode
     
     Returns:
         List of DailyMetrics for each day
@@ -428,6 +464,7 @@ async def simulate_14_day_trajectory(
     print(f"\n{'='*60}")
     print(f"Starting 14-Day Simulation: {persona.user_key}")
     print(f"Skill Level: {persona.skill_level}")
+    print(f"Mode: {'Stateless Baseline' if stateless else 'Adaptive'}")
     print(f"Initial Avg Mastery: {get_persona_average_mastery(persona):.3f}")
     print(f"{'='*60}\n")
     
@@ -450,6 +487,10 @@ async def simulate_14_day_trajectory(
         if random.random() > persona.consistency:
             metrics.active = False
             metrics.skipped_reason = "consistency_check_failed"
+            
+            # Apply forgetting decay when not practicing
+            apply_forgetting_decay(persona)
+            
             print(f"Day {day}: {persona.user_key} skipped (consistency)")
             trajectory.append(metrics)
             continue
@@ -465,7 +506,8 @@ async def simulate_14_day_trajectory(
             persona=persona,
             questions=questions,
             day=day,
-            attempted_questions=attempted_questions
+            attempted_questions=attempted_questions,
+            stateless=stateless
         )
         
         if not problem:
@@ -490,7 +532,8 @@ async def simulate_14_day_trajectory(
                 api_client=api_client,
                 problem=problem,
                 max_attempts=3,
-                use_hints=True
+                use_hints=not stateless,
+                stateless=stateless
             )
             
             # Extract metrics
@@ -515,7 +558,8 @@ async def simulate_14_day_trajectory(
             success=metrics.success,
             attempts=metrics.attempts,
             hints_used=metrics.hints_used,
-            time_spent_seconds=0  # Could track actual time if needed
+            time_spent_seconds=0,  # Could track actual time if needed
+            is_adaptive=not stateless
         )
         
         # Also update using old mastery function for backward compatibility
@@ -618,7 +662,9 @@ async def simulate_14_day_trajectory(
 async def run_parallel_simulations(
     personas: List[SyntheticPersona],
     questions: List[Dict[str, Any]],
-    max_concurrent: int = 5
+    max_concurrent: int = 5,
+    stateless: bool = False,
+    output_dir: str = "results/trajectories"
 ) -> Dict[str, List[DailyMetrics]]:
     """
     Run simulations for multiple personas in parallel.
@@ -635,6 +681,8 @@ async def run_parallel_simulations(
         personas: List of SyntheticPersona objects (with database_user_key set)
         questions: List of questions
         max_concurrent: Maximum concurrent simulations (default: 5)
+        stateless: If True, run in stateless baseline mode
+        output_dir: Directory to save trajectory files
     
     Returns:
         Dict mapping persona_key to trajectory (list of DailyMetrics)
@@ -642,7 +690,9 @@ async def run_parallel_simulations(
     print(f"\n{'='*80}")
     print(f"Running Parallel Simulations for {len(personas)} Personas")
     print(f"Max Concurrent: {max_concurrent}")
+    print(f"Mode: {'Stateless Baseline' if stateless else 'Adaptive'}")
     print(f"Questions Available: {len(questions)}")
+    print(f"Output Directory: {output_dir}")
     print(f"{'='*80}\n")
     
     results = {}
@@ -653,7 +703,9 @@ async def run_parallel_simulations(
             trajectory = await simulate_14_day_trajectory(
                 persona=persona,
                 questions=questions,
-                save_trajectory=True
+                save_trajectory=True,
+                output_dir=output_dir,
+                stateless=stateless
             )
             return persona.user_key, trajectory
     

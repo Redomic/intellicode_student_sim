@@ -59,6 +59,24 @@ Configuration is managed in `config_intellit.py`:
 *   **`SIMULATION_DAYS`**: Number of simulated days to run.
 *   **`LEARNER_PROFILES`**: Definitions for different learner archetypes (e.g., "Fast Learner", "Struggling Novice").
 
+## Learning Dynamics & Calibration
+
+To ensure the simulation produces realistic educational outcomes, we have implemented specific "laws of physics" for learning gains:
+
+1.  **Zone of Proximal Development (ZPD)**:
+    -   **Growth Zone**: Problems slightly above the learner's current mastery (difficulty gap +0.1 to +0.4) yield **1.5x learning gains**.
+    -   **Mismatch Penalty**: Problems that are too easy or too hard yield significantly lower gains (0.5x - 0.7x).
+    -   **Failure Analysis**: Failing a problem that was far too difficult results in a **1.5x penalty** (simulating confusion/frustration).
+
+2.  **Adaptive vs. Stateless**:
+    -   **Adaptive Mode**: The IntelliCode tutor provides scaffolding hints that boost learning efficiency (hint penalty reduced to 10%, learning bonus +50%).
+    -   **Stateless Mode**: Random problem selection often leads to mismatches (too easy/hard), resulting in suboptimal learning and higher failure penalties.
+
+3.  **Metrics**:
+    -   **Mastery Gain**: Change in true latent mastery over the simulation.
+    -   **Brier Score**: Accuracy of the system's mastery predictions (lower is better).
+    -   **ECE (Expected Calibration Error)**: Reliability of confidence estimates.
+
 ## Original Citation
 
 If you use this simulation framework, please cite the original work:

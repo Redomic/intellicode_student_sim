@@ -367,7 +367,8 @@ def update_cognitive_state(
     success: bool,
     attempts: int,
     hints_used: int,
-    time_spent_seconds: int = 0
+    time_spent_seconds: int = 0,
+    is_adaptive: bool = True
 ):
     """
     Update persona's cognitive state based on problem-solving outcome.
@@ -377,6 +378,11 @@ def update_cognitive_state(
     - Failure → slight decrease (forgetting)
     - Hints → scaled improvement based on hint_benefit
     
+    Implements Zone of Proximal Development (ZPD) logic:
+    - Higher gains for problems in "Growth Zone" (mastery 0.3-0.7)
+    - Lower gains for "Too Easy" or "Too Hard" problems
+    - Adaptive hints provide stronger learning signals than generic ones
+    
     Args:
         persona: SyntheticPersona to update
         problem: Problem that was attempted
@@ -384,11 +390,16 @@ def update_cognitive_state(
         attempts: Number of attempts made
         hints_used: Number of hints requested
         time_spent_seconds: Time spent on problem
+        is_adaptive: Whether the tutoring system was adaptive (IntelliCode) or stateless
     """
     
     # Extract problem topics
     problem_topics = problem.get('topics', [])
     normalized_topics = [normalize_topic_name(t) for t in problem_topics]
+    
+    # Calculate problem difficulty (normalized 0-1)
+    diff_map = {'Easy': 0.2, 'Medium': 0.5, 'Hard': 0.8}
+    problem_diff = diff_map.get(problem.get('difficulty', 'Medium'), 0.5)
     
     # Calculate learning amount based on outcome
     if success:
@@ -396,22 +407,59 @@ def update_cognitive_state(
         base_gain = persona.learning_rate
         
         # Less gain if used many hints (didn't learn as much independently)
-        hint_penalty = 0.2 * hints_used
+        # BUT adaptive hints mitigate this penalty by teaching concepts better
+        hint_penalty_factor = 0.2
+        if is_adaptive and hints_used > 0:
+            # Adaptive hints are more educational, so less penalty for using them
+            # Bonus from hint_benefit is applied later
+            hint_penalty_factor = 0.1
+            
+        hint_penalty = hint_penalty_factor * hints_used
         learning_gain = base_gain * (1.0 - hint_penalty)
+        
+        # Boost if hints were used in adaptive mode (Scaffolding effect)
+        if is_adaptive and hints_used > 0:
+            learning_gain *= (1.0 + persona.hint_benefit * 0.5)
         
         # Bonus for solving on first try
         if attempts == 1:
             learning_gain *= 1.2
         
     else:
-        # Failed → small negative adjustment (forgetting or confusion)
+        # Failed → negative adjustment (forgetting or confusion)
         learning_gain = -persona.forgetting_rate * 0.5
     
-    # Update mastery for each topic
+    # Update mastery for each topic with ZPD modulation
     for topic in normalized_topics:
         if topic in persona.current_mastery:
-            old_mastery = persona.current_mastery[topic]
-            new_mastery = old_mastery + learning_gain
+            current_mastery = persona.current_mastery[topic]
+            
+            # Zone of Proximal Development (ZPD) Logic
+            # Gap between learner skill and problem difficulty
+            gap = problem_diff - current_mastery
+            
+            zpd_multiplier = 1.0
+            
+            if success:
+                if -0.1 <= gap <= 0.4:
+                    # Perfect "Growth Zone" (Problem slightly harder than skill)
+                    zpd_multiplier = 1.5
+                elif gap < -0.3:
+                    # Too Easy (Review) - Lower gain
+                    zpd_multiplier = 0.5
+                elif gap > 0.5:
+                    # Too Hard (Luck/Fluke) - Lower gain
+                    zpd_multiplier = 0.7
+            else:
+                # Failure Analysis
+                if gap > 0.6:
+                    # Failed because it was WAY too hard -> Confusion/Frustration
+                    # Increased penalty in stateless/random mode
+                    zpd_multiplier = 1.5 
+            
+            # Apply update
+            delta = learning_gain * zpd_multiplier
+            new_mastery = current_mastery + delta
             
             # Cap mastery between 0 and 1
             persona.current_mastery[topic] = np.clip(new_mastery, 0.0, 1.0)

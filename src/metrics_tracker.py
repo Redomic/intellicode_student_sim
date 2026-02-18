@@ -106,7 +106,7 @@ class MetricsTracker:
         return self.metrics
     
     def _calculate_offline_metrics(self) -> dict:
-        """Calculate offline metrics (mastery calibration, content coverage)."""
+        """Calculate offline metrics (mastery calibration, ECE, AUROC, content coverage)."""
         print("📊 Calculating Offline Metrics...")
         
         # Mastery calibration: predicted vs actual success
@@ -127,15 +127,67 @@ class MetricsTracker:
                     predicted_successes.append(avg_mastery)
                     actual_successes.append(1.0 if day_metrics['success'] else 0.0)
         
+        # Convert to numpy arrays
+        y_prob = np.array(predicted_successes)
+        y_true = np.array(actual_successes)
+        
         # Calculate Brier score
         brier_score = 0.0
-        if predicted_successes:
-            brier_score = np.mean([(p - a)**2 for p, a in zip(predicted_successes, actual_successes)])
-        
-        # Calculate correlation
+        if len(y_prob) > 0:
+            brier_score = np.mean((y_prob - y_true) ** 2)
+            
+        # Calculate ECE (Expected Calibration Error)
+        ece_score = 0.0
+        if len(y_prob) > 0:
+            n_bins = 10
+            bin_boundaries = np.linspace(0, 1, n_bins + 1)
+            bin_lowers = bin_boundaries[:-1]
+            bin_uppers = bin_boundaries[1:]
+            
+            for bin_lower, bin_upper in zip(bin_lowers, bin_uppers):
+                # Filter predictions in this bin
+                in_bin = (y_prob >= bin_lower) & (y_prob < bin_upper)
+                # Handle edge case for last bin to include 1.0
+                if bin_upper == 1.0:
+                    in_bin = (y_prob >= bin_lower) & (y_prob <= bin_upper)
+                
+                prop_in_bin = np.mean(in_bin)
+                
+                if prop_in_bin > 0:
+                    accuracy_in_bin = np.mean(y_true[in_bin])
+                    avg_confidence_in_bin = np.mean(y_prob[in_bin])
+                    ece_score += np.abs(avg_confidence_in_bin - accuracy_in_bin) * prop_in_bin
+
+        # Calculate AUROC
+        auroc_score = 0.5
+        if len(y_prob) > 0 and len(np.unique(y_true)) > 1:
+            try:
+                from sklearn.metrics import roc_auc_score
+                auroc_score = roc_auc_score(y_true, y_prob)
+            except ImportError:
+                # Manual AUROC approximation or fallback if sklearn not available
+                # Simple implementation using trapezoidal rule
+                # Sort by probability
+                desc_score_indices = np.argsort(y_prob)[::-1]
+                y_score_desc = y_prob[desc_score_indices]
+                y_true_desc = y_true[desc_score_indices]
+                
+                n_pos = np.sum(y_true_desc)
+                n_neg = len(y_true_desc) - n_pos
+                
+                if n_pos > 0 and n_neg > 0:
+                    tp = np.cumsum(y_true_desc)
+                    fp = np.cumsum(1 - y_true_desc)
+                    # Coordinates for ROC curve
+                    tpr = tp / n_pos
+                    fpr = fp / n_neg
+                    # AUC via trapezoidal rule
+                    auroc_score = np.trapz(tpr, fpr)
+
+        # Calculate correlation with safety check
         correlation = 0.0
-        if len(predicted_successes) > 1:
-            correlation = np.corrcoef(predicted_successes, actual_successes)[0, 1]
+        if len(y_prob) > 1 and np.std(y_prob) > 0 and np.std(y_true) > 0:
+            correlation = np.corrcoef(y_prob, y_true)[0, 1]
         
         # Content coverage: topic distribution
         topic_attempts = Counter()
@@ -156,8 +208,19 @@ class MetricsTracker:
         offline_metrics = {
             "mastery_calibration": {
                 "brier_score": round(brier_score, 4),
-                "correlation": round(correlation, 4),
-                "n_predictions": len(predicted_successes)
+                "ece_score": round(ece_score, 4),
+                "auroc": round(auroc_score, 4),
+                "correlation": round(correlation, 4) if not np.isnan(correlation) else 0.0,
+                "n_predictions": len(predicted_successes),
+                # Aggregate stats placeholders (calculated across runs if needed)
+                "stats": {
+                    "brier_mean": round(brier_score, 4),
+                    "brier_std": 0.0, # Placeholder for single run
+                    "ece_mean": round(ece_score, 4),
+                    "ece_std": 0.0,
+                    "auroc_mean": round(auroc_score, 4),
+                    "auroc_std": 0.0
+                }
             },
             "content_coverage": {
                 "unique_topics_covered": len(topic_attempts),
@@ -166,7 +229,7 @@ class MetricsTracker:
             }
         }
         
-        print("  ✅ Mastery calibration calculated")
+        print("  ✅ Mastery calibration (Brier, ECE, AUROC) calculated")
         print("  ✅ Content coverage calculated")
         
         return offline_metrics
@@ -398,6 +461,8 @@ class MetricsTracker:
         offline = self.metrics.get('offline', {})
         calib = offline.get('mastery_calibration', {})
         print(f"  Brier Score: {calib.get('brier_score', 0):.4f}")
+        print(f"  ECE Score:   {calib.get('ece_score', 0):.4f}")
+        print(f"  AUROC:       {calib.get('auroc', 0):.4f}")
         print(f"  Correlation: {calib.get('correlation', 0):.4f}")
         print(f"  Predictions: {calib.get('n_predictions', 0)}")
         

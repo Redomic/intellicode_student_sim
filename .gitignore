@@ -3,3 +3,4 @@ results/
 */__pycache__
 */__pycache__/*
 ./student_sim/
+results_full_eval/
